@@ -144,9 +144,15 @@ function TimerView() {
     localStorage.setItem('ultradianSessions', JSON.stringify(sessions));
   };
 
-  const toggleTimer = () => {
-    if (!isRunning && settings.enableNotifications && Notification.permission === 'default') {
-      Notification.requestPermission();
+  const toggleTimer = async () => {
+    // Request notification permission only once, and don't block the timer
+    if (!isRunning && settings.enableNotifications && 'Notification' in window && Notification.permission === 'default') {
+      try {
+        await Notification.requestPermission();
+      } catch (error) {
+        console.log('Notification permission request failed:', error);
+        // Continue anyway - don't block the timer
+      }
     }
     setIsRunning(!isRunning);
   };
@@ -222,10 +228,13 @@ function TimerView() {
       {/* Controls */}
       <div className="flex justify-center gap-4 mb-6">
         <button
-          onClick={toggleTimer}
-          onTouchStart={(e) => e.currentTarget.click()}
-          style={{ touchAction: 'manipulation' }}
-          className={`flex items-center gap-2 px-6 py-3 rounded-lg font-medium transition-all ${
+          type="button"
+          onClick={(e) => {
+            e.preventDefault();
+            toggleTimer();
+          }}
+          style={{ touchAction: 'manipulation', WebkitTapHighlightColor: 'transparent' }}
+          className={`flex items-center gap-2 px-6 py-3 rounded-lg font-medium transition-all active:scale-95 ${
             isRunning
               ? 'bg-gray-600 hover:bg-gray-700 text-white'
               : 'bg-indigo-600 hover:bg-indigo-700 text-white shadow-md'
@@ -235,10 +244,13 @@ function TimerView() {
           {isRunning ? 'Pause' : 'Start'}
         </button>
         <button
-          onClick={resetTimer}
-          onTouchStart={(e) => e.currentTarget.click()}
-          style={{ touchAction: 'manipulation' }}
-          className="flex items-center gap-2 px-6 py-3 rounded-lg font-medium bg-gray-200 hover:bg-gray-300 text-gray-700 transition-all"
+          type="button"
+          onClick={(e) => {
+            e.preventDefault();
+            resetTimer();
+          }}
+          style={{ touchAction: 'manipulation', WebkitTapHighlightColor: 'transparent' }}
+          className="flex items-center gap-2 px-6 py-3 rounded-lg font-medium bg-gray-200 hover:bg-gray-300 text-gray-700 transition-all active:scale-95"
         >
           <RotateCcw size={20} />
           Reset
