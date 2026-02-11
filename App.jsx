@@ -55,6 +55,7 @@ function TabButton({ active, onClick, children, icon }) {
   return (
     <button
       onClick={onClick}
+      style={{ touchAction: 'manipulation' }}
       className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all ${
         active 
           ? 'bg-indigo-600 text-white shadow-md' 
@@ -222,6 +223,8 @@ function TimerView() {
       <div className="flex justify-center gap-4 mb-6">
         <button
           onClick={toggleTimer}
+          onTouchStart={(e) => e.currentTarget.click()}
+          style={{ touchAction: 'manipulation' }}
           className={`flex items-center gap-2 px-6 py-3 rounded-lg font-medium transition-all ${
             isRunning
               ? 'bg-gray-600 hover:bg-gray-700 text-white'
@@ -233,6 +236,8 @@ function TimerView() {
         </button>
         <button
           onClick={resetTimer}
+          onTouchStart={(e) => e.currentTarget.click()}
+          style={{ touchAction: 'manipulation' }}
           className="flex items-center gap-2 px-6 py-3 rounded-lg font-medium bg-gray-200 hover:bg-gray-300 text-gray-700 transition-all"
         >
           <RotateCcw size={20} />
